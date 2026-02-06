@@ -21,13 +21,14 @@ impl GenericTypeCell {
         F: FnOnce() -> String,
     {
         let type_id = TypeId::of::<G>();
-        match self.0.read().get(&type_id) {
-            Some(v) => *v,
-            None => self
-                .0
-                .write()
-                .entry(type_id)
-                .or_insert(Box::leak(Box::new((f)()))),
+        if let Some(v) = self.0.read().get(&type_id) {
+            return v;
         }
+
+        let v = (f)();
+        self.0
+            .write()
+            .entry(type_id)
+            .or_insert(Box::leak(Box::new(v)))
     }
 }
