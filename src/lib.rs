@@ -9,6 +9,9 @@ pub mod std;
 #[cfg(feature = "glam")]
 pub mod glam;
 
+#[cfg(feature = "bytes")]
+pub mod bytes;
+
 /// A stable version of std::any::type_name, with support for generics and path overrides.
 #[diagnostic::on_unimplemented(
     message = "`{Self}` does not implement `TypePath` so cannot provide static type path information",
