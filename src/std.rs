@@ -9,7 +9,7 @@ use crate::{TypePath, cell::GenericTypeCell};
 impl<T: TypePath, const N: usize> TypePath for [T; N] {
     fn type_path() -> &'static str {
         static CELL: GenericTypeCell = GenericTypeCell::new();
-        CELL.get_or_insert::<Self, _>(|| format!("[{}; {N}]", T::type_path()))
+        CELL.get_or_insert::<Self, _, _>(|| format!("[{}; {N}]", T::type_path()))
     }
 }
 
@@ -18,7 +18,7 @@ macro_rules! impl_type_path_tuple {
         impl<$($P: TypePath),*> TypePath for ($($P,)*) {
             fn type_path() -> &'static str {
                 static CELL: GenericTypeCell = GenericTypeCell::new();
-                CELL.get_or_insert::<Self, _>(|| {
+                CELL.get_or_insert::<Self, _, _>(|| {
                     let mut result = String::new();
                     result.push('(');
                     $(result.push_str(<$P as TypePath>::type_path());)*
@@ -65,7 +65,7 @@ macro_rules! impl_type_path {
         impl<$($gen: TypePath),*> TypePath for $ty<$($gen),*> {
             fn type_path() -> &'static str {
                 static CELL: GenericTypeCell = GenericTypeCell::new();
-                CELL.get_or_insert::<Self, _>(|| {
+                CELL.get_or_insert::<Self, _, _>(|| {
                     let mut result = String::from($path);
                     result.push('<');
                     $(result.push_str(<$gen as TypePath>::type_path());)*
