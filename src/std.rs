@@ -82,5 +82,37 @@ impl_type_path!("std::option::Option", Option<T>);
 impl_type_path!("std::result::Result", Result<T, E>);
 impl_type_path!("std::boxed::Box", Box<T>);
 impl_type_path!("std::sync::Arc", Arc<T>);
-impl_type_path!("std::collections::HashMap", HashMap<K, V, H>);
-impl_type_path!("std::collections::HashSet", HashSet<K, H>);
+
+impl<K, V, H: 'static> TypePath for HashMap<K, V, H>
+where
+    K: TypePath,
+    V: TypePath,
+{
+    fn type_path() -> &'static str {
+        static CELL: GenericTypeCell = GenericTypeCell::new();
+        CELL.get_or_insert::<Self, _, _>(|| {
+            let mut result = String::from("std::collections::HashMap");
+            result.push('<');
+            result.push_str(K::type_path());
+            result.push_str(V::type_path());
+            result.push('>');
+            result
+        })
+    }
+}
+
+impl<K, H: 'static> TypePath for HashSet<K, H>
+where
+    K: TypePath,
+{
+    fn type_path() -> &'static str {
+        static CELL: GenericTypeCell = GenericTypeCell::new();
+        CELL.get_or_insert::<Self, _, _>(|| {
+            let mut result = String::from("std::collections::HashMap");
+            result.push('<');
+            result.push_str(K::type_path());
+            result.push('>');
+            result
+        })
+    }
+}
