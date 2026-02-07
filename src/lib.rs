@@ -47,6 +47,28 @@ impl<T: TypePath> DynamicTypePath for T {
     }
 }
 
+pub struct TypePathTable {
+    pub type_path: &'static str,
+    pub short_type_path: fn() -> &'static str,
+}
+
+impl TypePathTable {
+    pub fn of<T: TypePath>() -> Self {
+        Self {
+            type_path: T::type_path(),
+            short_type_path: T::short_type_path,
+        }
+    }
+
+    pub fn type_path(&self) -> &'static str {
+        self.type_path
+    }
+
+    pub fn short_type_path(&self) -> &'static str {
+        (self.short_type_path)()
+    }
+}
+
 /// Removes type paths from a string.
 /// For example, `std::option::Option<std::vec::Vec<std::u32>>` becomes `Option<Vec<u32>>`.
 fn into_short_type_path(s: &str) -> String {
