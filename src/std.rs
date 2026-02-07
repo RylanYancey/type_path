@@ -82,5 +82,5 @@ impl_type_path!("std::option::Option", Option<T>);
 impl_type_path!("std::result::Result", Result<T, E>);
 impl_type_path!("std::boxed::Box", Box<T>);
 impl_type_path!("std::sync::Arc", Arc<T>);
-impl_type_path!("std::collections::HashMap", HashMap<K, V>);
-impl_type_path!("std::collections::HashSet", HashSet<K>);
+impl_type_path!("std::collections::HashMap", HashMap<K, V, H>);
+impl_type_path!("std::collections::HashSet", HashSet<K, H>);
